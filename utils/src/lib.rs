@@ -1,3 +1,5 @@
+//! TODO: this needs to be overhauled and is temporary just to get logging in place
+
 use tracing_subscriber::{filter::LevelFilter, util::SubscriberInitExt};
 
 /// initializes a logger, specifically avoiding
@@ -5,9 +7,18 @@ use tracing_subscriber::{filter::LevelFilter, util::SubscriberInitExt};
 ///
 /// it is equivalent to calling tracing_subscriber::fmt::init() but with
 /// the enablement of file, and line numbers
-pub fn init_logger() {
-    //tracing_subscriber::fmt::init();
-    //return;
+pub fn init_logger(debug: bool) {
+    let rust_log_conf = std::env::var("RUST_LOG").unwrap_or_default();
+    let rust_log_conf = if rust_log_conf.is_empty() {
+        if debug {
+            "debug".to_string()
+        } else {
+            "info".to_string()
+        }
+    } else {
+        format!("{rust_log_conf},sqlx=warn,sqlx_ext=warn")
+    };
+    std::env::set_var("RUST_LOG", &rust_log_conf);
     use tracing_subscriber::fmt::Subscriber;
     let builder = Subscriber::builder();
 
@@ -47,5 +58,30 @@ pub fn init_logger() {
     };
     if let Err(err) = subscriber.try_init() {
         log::error!("failed to initialize log system {:#?}", err);
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_logger() {
+        std::thread::spawn(|| {
+            init_logger(false);
+            log::info!("info log");
+            log::debug!("debug log");
+        })
+        .join()
+        .unwrap();
+    }
+    #[test]
+    fn test_debug_logger() {
+        std::thread::spawn(|| {
+            init_logger(true);
+            log::info!("info log");
+            log::debug!("debug log");
+        })
+        .join()
+        .unwrap();
     }
 }
