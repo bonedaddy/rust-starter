@@ -9,8 +9,7 @@ use {
 
 pub mod keypair;
 
-#[derive(Serialize, Deserialize, Clone)]
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct Config {
     pub keypair: keypair::KeypairType,
 }
@@ -50,14 +49,10 @@ impl Config {
         Ok(())
     }
     pub fn load(file_path: &str) -> Result<Self> {
-        serde_yaml::from_str(
-                &std::fs::read_to_string(file_path).with_context(|| LOAD_FAILURE)?,
-            )
+        serde_yaml::from_str(&std::fs::read_to_string(file_path).with_context(|| LOAD_FAILURE)?)
             .with_context(|| DESERIALIZE_FAILURE)
     }
 }
-
-
 
 const SAVE_FAILURE: &str = "failed to save file";
 const LOAD_FAILURE: &str = "failed to load file";
