@@ -13,7 +13,7 @@ pub async fn main() -> Result<()> {
         .subcommands(vec![Command::new("config")
             .about("configuration management commands")
             .subcommands(vec![Command::new("new")
-                .aliases(&["gen", "generate"])
+                .aliases(["gen", "generate"])
                 .about("create and save a new configuration file")
                 .arg(keypair_type_flag())])])
         .get_matches();
