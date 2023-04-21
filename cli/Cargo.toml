@@ -5,4 +5,14 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[dependencies.tokio]
+version = "1"
+features = ["full", "parking_lot"]
+[dependencies.clap]
+version = "4"
+[dependencies.anyhow]
+version = "1"
+[dependencies.config]
+path = "../config"
+[dependencies.utils]
+path = "../utils"

@@ -1,11 +1,12 @@
 [workspace]
 members = [
     "cli",
-    "config"
+    "config",
+    "utils"
 ]
 
 [profile.release]
-optlevel = 3
+opt-level = 3
 incremental = false
 codegen-units = 1
 # lto = "fat"

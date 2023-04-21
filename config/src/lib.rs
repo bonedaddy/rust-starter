@@ -10,11 +10,11 @@ use {
 pub mod keypair;
 
 #[derive(Serialize, Deserialize, Clone, Default)]
-pub struct Config {
+pub struct Configuration {
     pub keypair: keypair::KeypairType,
 }
 
-impl Config {
+impl Configuration {
     pub fn new(keypair_type: &str) -> Self {
         let kp = if keypair_type.eq_ignore_ascii_case("hardware")
             || keypair_type.eq_ignore_ascii_case("hw")
@@ -34,7 +34,7 @@ impl Config {
                 value: "replaceme".to_string(),
             }
         };
-        Config {
+        Self {
             keypair: kp,
             ..Default::default()
         }
@@ -63,17 +63,17 @@ mod test {
     use super::*;
     #[test]
     fn test_config() {
-        let conf_pk = Config::default();
-        let conf_fh = Config::new("file");
-        let conf_hw = Config::new("hardware");
+        let conf_pk = Configuration::default();
+        let conf_fh = Configuration::new("file");
+        let conf_hw = Configuration::new("hardware");
 
         conf_pk.save("conf_pk.yaml").unwrap();
         conf_fh.save("conf_fh.yaml").unwrap();
         conf_hw.save("conf_hw.yaml").unwrap();
 
-        let got_conf_pk = Config::load("conf_pk.yaml").unwrap();
-        let got_conf_fh = Config::load("conf_fh.yaml").unwrap();
-        let got_conf_hw = Config::load("conf_hw.yaml").unwrap();
+        let got_conf_pk = Configuration::load("conf_pk.yaml").unwrap();
+        let got_conf_fh = Configuration::load("conf_fh.yaml").unwrap();
+        let got_conf_hw = Configuration::load("conf_hw.yaml").unwrap();
 
         let conf_pk_str = serde_yaml::to_string(&conf_pk).unwrap();
         let conf_fh_str = serde_yaml::to_string(&conf_fh).unwrap();
