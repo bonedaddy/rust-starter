@@ -16,25 +16,13 @@ pub enum KeypairType {
 
 impl KeypairType {
     pub fn is_hw(&self) -> bool {
-        if let Self::Hardware { .. } = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Self::Hardware { .. })
     }
     pub fn is_file_based(&self) -> bool {
-        if let Self::FileBased { .. } = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Self::FileBased { .. })
     }
     pub fn is_private_key(&self) -> bool {
-        if let Self::Private { .. } = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Self::Private { .. })
     }
     pub fn contents(&self) -> String {
         match self {
