@@ -6,10 +6,9 @@ use {
 
 #[tokio::main]
 pub async fn main() -> Result<()> {
-    utils::init_logger();
-
     let matches = Command::new("rust-starter")
         .arg(config_flag())
+        .arg(debug_flag())
         .subcommands(vec![Command::new("config")
             .about("configuration management commands")
             .subcommands(vec![Command::new("new")
@@ -19,6 +18,9 @@ pub async fn main() -> Result<()> {
         .get_matches();
 
     let conf_path = matches.get_one::<String>("config").unwrap();
+    let debug_log = matches.get_flag("debug");
+
+    utils::init_logger(debug_log);
 
     process_matches(&matches, conf_path).await?;
 
@@ -50,6 +52,14 @@ fn keypair_type_flag() -> Arg {
         .long("keypair-type")
         .help("type of keypair we are using")
         .required(true)
+}
+
+fn debug_flag() -> Arg {
+    Arg::new("debug")
+        .long("debug")
+        .help("enable debug logging")
+        .action(clap::ArgAction::SetTrue)
+        .required(false)
 }
 
 const INVALID_COMMAND: &str = "invalid command, try running --help";
